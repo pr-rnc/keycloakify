@@ -38,12 +38,6 @@ export default function KcApp(props: { kcContext: KcContext }) {
     return null;
   }
 
-  /*
-   * Examples assuming i18n.currentLanguageTag === "en":
-   * i18n.msg("access-denied") === <span>Access denied</span>
-   * i18n.msg("foo") === <span>foo in English</span>
-   */
-
   return (
     <Suspense>
       {(() => {
@@ -76,9 +70,6 @@ export default function KcApp(props: { kcContext: KcContext }) {
                 doUseDefaultCss={true}
               />
             );
-          // Removes those pages in you project. They are included to show you how to implement keycloak pages
-          // that are not yes implemented by Keycloakify.
-          // See: https://docs.keycloakify.dev/limitations#some-pages-still-have-the-default-theme.-why
           case "my-extra-page-1.ftl":
             return (
               <MyExtraPage1
@@ -94,7 +85,6 @@ export default function KcApp(props: { kcContext: KcContext }) {
               />
             );
           // We choose to use the default Template for the Info page and to download the theme resources.
-          // This is just an example to show you what is possible. You likely don't want to keep this as is.
           case "info.ftl":
             return (
               <Info

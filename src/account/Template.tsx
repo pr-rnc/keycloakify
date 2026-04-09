@@ -5,9 +5,6 @@ import { useGetClassName } from "keycloakify/account/lib/useGetClassName";
 import { usePrepareTemplate } from "keycloakify/lib/usePrepareTemplate";
 import { assert } from "keycloakify/tools/assert";
 import { clsx } from "keycloakify/tools/clsx";
-import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
-import { useEffect } from "react";
 import type { I18n } from "./i18n";
 import type { KcContext } from "./kcContext";
 
@@ -20,12 +17,6 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
     i18n;
 
   const { locale, url, features, realm, message, referrer } = kcContext;
-
-  useEffect(() => {
-    posthog.init(kcContext.properties.POSTHOG_KEY ?? "fake-key", {
-      api_host: kcContext.properties.POSTHOG_HOST,
-    });
-  }, [kcContext?.properties?.POSTHOG_KEY, kcContext?.properties?.POSTHOG_HOST]);
 
   const { isReady } = usePrepareTemplate({
     doFetchDefaultThemeResources: doUseDefaultCss,
@@ -44,7 +35,6 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
   return (
     <>
-      <PostHogProvider>
         <header className="navbar navbar-default navbar-pf navbar-main header">
           <nav className="navbar" role="navigation">
             <div className="navbar-header">
@@ -153,7 +143,6 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
             {children}
           </div>
         </div>
-      </PostHogProvider>
     </>
   );
 }

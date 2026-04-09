@@ -6,14 +6,6 @@ import { useState, type FormEventHandler } from "react";
 import type { I18n } from "../i18n";
 import type { KcContext } from "../kcContext";
 
-const my_custom_param = new URL(window.location.href).searchParams.get(
-  "my_custom_param"
-);
-
-if (my_custom_param !== null) {
-  console.log("my_custom_param:", my_custom_param);
-}
-
 export default function Login(
   props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>
 ) {
@@ -256,30 +248,7 @@ export default function Login(
                     id={`zocial-${p.alias}`}
                     className={clsx("zocial", p.providerId)}
                   >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                      }}
-                    >
-                      {p.providerId == "google" ? (
-                        <img
-                          src={`https://assets.nucleuscloud.com/neosync/app/FcGoogle.svg`}
-                          alt="Neosync logo"
-                          width={24}
-                          height={24}
-                        />
-                      ) : (
-                        <img
-                          src={`https://assets.nucleuscloud.com/neosync/app/FcGithub.svg`}
-                          alt="Neosync logo"
-                          width={24}
-                          height={24}
-                        />
-                      )}
-                      <span>{p.displayName}</span>
-                    </div>
+                    <span>{p.displayName}</span>
                   </a>
                 </li>
               ))}
