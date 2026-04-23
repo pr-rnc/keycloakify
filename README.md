@@ -1,6 +1,6 @@
-# AnonyMind Keycloak Theme
+# Vydon Keycloak Theme
 
-Custom Keycloak login theme for AnonyMind, built with [Keycloakify v9](https://www.keycloakify.dev/).
+Custom Keycloak login theme for Vydon, built with [Keycloakify v9](https://www.keycloakify.dev/).
 
 ## Development
 

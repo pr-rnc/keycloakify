@@ -12,10 +12,8 @@ export default defineConfig({
     react(),
     commonjs(),
     keycloakify({
-      extraThemeProperties: [
-        "POSTHOG_KEY=${env.POSTHOG_KEY:fake-key}",
-        "POSTHOG_HOST=${env.POSTHOG_HOST:https://app.posthog.com}"
-      ]
+      themeName: "vydon-keycloakify",
+      extraThemeProperties: []
 
       // themeName: "keycloakify-starter",
       // extraThemeProperties: [

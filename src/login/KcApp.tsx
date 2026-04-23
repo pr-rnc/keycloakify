@@ -17,14 +17,13 @@ const Info = lazy(() => import("keycloakify/login/pages/Info"));
 // This is like adding classes to theme.properties
 // https://github.com/keycloak/keycloak/blob/11.0.3/themes/src/main/resources/theme/keycloak/login/theme.properties
 const classes = {
-  // NOTE: The classes are defined in ./KcApp.css
-  kcHtmlClass: "my-root-class",
-  kcHeaderWrapperClass: "my-color my-font",
-  kcInputClass: "kcInputClass",
-  kcContentWrapperClass: "kcContentWrapperClass",
-  kcLoginClass: "kcLoginClass",
-  kcFormCardClass: "kcFormCardClass",
-  kcSignUpClass: "kcSignUpClass",
+  kcHtmlClass: "am-root",
+  kcHeaderWrapperClass: "",
+  kcInputClass: "am-input",
+  kcContentWrapperClass: "",
+  kcLoginClass: "am-page",
+  kcFormCardClass: "am-card",
+  kcSignUpClass: "",
 } satisfies PageProps["classes"];
 
 export default function KcApp(props: { kcContext: KcContext }) {
@@ -46,42 +45,42 @@ export default function KcApp(props: { kcContext: KcContext }) {
             return (
               <Login
                 {...{ kcContext, i18n, Template, classes }}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
           case "register.ftl":
             return (
               <Register
                 {...{ kcContext, i18n, Template, classes }}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
           case "register-user-profile.ftl":
             return (
               <RegisterUserProfile
                 {...{ kcContext, i18n, Template, classes }}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
           case "terms.ftl":
             return (
               <Terms
                 {...{ kcContext, i18n, Template, classes }}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
           case "my-extra-page-1.ftl":
             return (
               <MyExtraPage1
                 {...{ kcContext, i18n, Template, classes }}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
           case "my-extra-page-2.ftl":
             return (
               <MyExtraPage2
                 {...{ kcContext, i18n, Template, classes }}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
           // We choose to use the default Template for the Info page and to download the theme resources.
@@ -90,7 +89,7 @@ export default function KcApp(props: { kcContext: KcContext }) {
               <Info
                 {...{ kcContext, i18n, classes }}
                 Template={lazy(() => import("keycloakify/login/Template"))}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
           default:
@@ -98,7 +97,7 @@ export default function KcApp(props: { kcContext: KcContext }) {
               <Fallback
                 {...{ kcContext, i18n, classes }}
                 Template={Template}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
               />
             );
         }

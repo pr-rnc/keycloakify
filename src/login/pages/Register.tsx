@@ -1,183 +1,178 @@
-// ejected using 'npx eject-keycloak-page'
 import { clsx } from "keycloakify/tools/clsx";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
-import { useGetClassName } from "keycloakify/login/lib/useGetClassName";
 import type { KcContext } from "../kcContext";
 import type { I18n } from "../i18n";
 
-export default function Register(props: PageProps<Extract<KcContext, { pageId: "register.ftl" }>, I18n>) {
-    const { kcContext, i18n, doUseDefaultCss, Template, classes } = props;
+export default function Register(
+  props: PageProps<Extract<KcContext, { pageId: "register.ftl" }>, I18n>
+) {
+  const { kcContext, i18n, doUseDefaultCss, Template, classes } = props;
 
-    const { getClassName } = useGetClassName({
-        doUseDefaultCss,
-        classes
-    });
+  const {
+    url,
+    messagesPerField,
+    register,
+    realm,
+    passwordRequired,
+    recaptchaRequired,
+    recaptchaSiteKey,
+  } = kcContext;
 
-    const { url, messagesPerField, register, realm, passwordRequired, recaptchaRequired, recaptchaSiteKey } = kcContext;
+  const { msg, msgStr } = i18n;
 
-    const { msg, msgStr } = i18n;
+  return (
+    <Template
+      {...{ kcContext, i18n, doUseDefaultCss, classes }}
+      headerNode={msg("registerTitle")}
+    >
+      <p className="am-subtitle">Create your account to get started</p>
 
-    return (
-        <Template {...{ kcContext, i18n, doUseDefaultCss, classes }} headerNode={msg("registerTitle")}>
-            <form id="kc-register-form" className={getClassName("kcFormClass")} action={url.registrationAction} method="post">
-                <div
-                    className={clsx(
-                        getClassName("kcFormGroupClass"),
-                        messagesPerField.printIfExists("firstName", getClassName("kcFormGroupErrorClass"))
-                    )}
-                >
-                    <div className={getClassName("kcLabelWrapperClass")}>
-                        <label htmlFor="firstName" className={getClassName("kcLabelClass")}>
-                            {msg("firstName")}
-                        </label>
-                    </div>
-                    <div className={getClassName("kcInputWrapperClass")}>
-                        <input
-                            type="text"
-                            id="firstName"
-                            className={getClassName("kcInputClass")}
-                            name="firstName"
-                            defaultValue={register.formData.firstName ?? ""}
-                        />
-                    </div>
-                </div>
+      <form
+        id="kc-register-form"
+        action={url.registrationAction}
+        method="post"
+      >
+        {/* First name + Last name side by side */}
+        <div className="am-form-row">
+          <div className="am-form-group">
+            <label htmlFor="firstName" className="am-label">
+              {msg("firstName")}
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              className={clsx(
+                "am-input",
+                messagesPerField.printIfExists("firstName", "am-input-error")
+              )}
+              name="firstName"
+              defaultValue={register.formData.firstName ?? ""}
+              autoFocus
+            />
+          </div>
 
-                <div
-                    className={clsx(
-                        getClassName("kcFormGroupClass"),
-                        messagesPerField.printIfExists("lastName", getClassName("kcFormGroupErrorClass"))
-                    )}
-                >
-                    <div className={getClassName("kcLabelWrapperClass")}>
-                        <label htmlFor="lastName" className={getClassName("kcLabelClass")}>
-                            {msg("lastName")}
-                        </label>
-                    </div>
-                    <div className={getClassName("kcInputWrapperClass")}>
-                        <input
-                            type="text"
-                            id="lastName"
-                            className={getClassName("kcInputClass")}
-                            name="lastName"
-                            defaultValue={register.formData.lastName ?? ""}
-                        />
-                    </div>
-                </div>
+          <div className="am-form-group">
+            <label htmlFor="lastName" className="am-label">
+              {msg("lastName")}
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              className={clsx(
+                "am-input",
+                messagesPerField.printIfExists("lastName", "am-input-error")
+              )}
+              name="lastName"
+              defaultValue={register.formData.lastName ?? ""}
+            />
+          </div>
+        </div>
 
-                <div
-                    className={clsx(getClassName("kcFormGroupClass"), messagesPerField.printIfExists("email", getClassName("kcFormGroupErrorClass")))}
-                >
-                    <div className={getClassName("kcLabelWrapperClass")}>
-                        <label htmlFor="email" className={getClassName("kcLabelClass")}>
-                            {msg("email")}
-                        </label>
-                    </div>
-                    <div className={getClassName("kcInputWrapperClass")}>
-                        <input
-                            type="text"
-                            id="email"
-                            className={getClassName("kcInputClass")}
-                            name="email"
-                            defaultValue={register.formData.email ?? ""}
-                            autoComplete="email"
-                        />
-                    </div>
-                </div>
-                {!realm.registrationEmailAsUsername && (
-                    <div
-                        className={clsx(
-                            getClassName("kcFormGroupClass"),
-                            messagesPerField.printIfExists("username", getClassName("kcFormGroupErrorClass"))
-                        )}
-                    >
-                        <div className={getClassName("kcLabelWrapperClass")}>
-                            <label htmlFor="username" className={getClassName("kcLabelClass")}>
-                                {msg("username")}
-                            </label>
-                        </div>
-                        <div className={getClassName("kcInputWrapperClass")}>
-                            <input
-                                type="text"
-                                id="username"
-                                className={getClassName("kcInputClass")}
-                                name="username"
-                                defaultValue={register.formData.username ?? ""}
-                                autoComplete="username"
-                            />
-                        </div>
-                    </div>
+        {/* Email */}
+        <div className="am-form-group">
+          <label htmlFor="email" className="am-label">
+            {msg("email")}
+          </label>
+          <input
+            type="text"
+            id="email"
+            className={clsx(
+              "am-input",
+              messagesPerField.printIfExists("email", "am-input-error")
+            )}
+            name="email"
+            defaultValue={register.formData.email ?? ""}
+            autoComplete="email"
+          />
+        </div>
+
+        {/* Username (if not using email as username) */}
+        {!realm.registrationEmailAsUsername && (
+          <div className="am-form-group">
+            <label htmlFor="username" className="am-label">
+              {msg("username")}
+            </label>
+            <input
+              type="text"
+              id="username"
+              className={clsx(
+                "am-input",
+                messagesPerField.printIfExists("username", "am-input-error")
+              )}
+              name="username"
+              defaultValue={register.formData.username ?? ""}
+              autoComplete="username"
+            />
+          </div>
+        )}
+
+        {/* Password fields */}
+        {passwordRequired && (
+          <>
+            <div className="am-form-group">
+              <label htmlFor="password" className="am-label">
+                {msg("password")}
+              </label>
+              <input
+                type="password"
+                id="password"
+                className={clsx(
+                  "am-input",
+                  messagesPerField.printIfExists("password", "am-input-error")
                 )}
-                {passwordRequired && (
-                    <>
-                        <div
-                            className={clsx(
-                                getClassName("kcFormGroupClass"),
-                                messagesPerField.printIfExists("password", getClassName("kcFormGroupErrorClass"))
-                            )}
-                        >
-                            <div className={getClassName("kcLabelWrapperClass")}>
-                                <label htmlFor="password" className={getClassName("kcLabelClass")}>
-                                    {msg("password")}
-                                </label>
-                            </div>
-                            <div className={getClassName("kcInputWrapperClass")}>
-                                <input
-                                    type="password"
-                                    id="password"
-                                    className={getClassName("kcInputClass")}
-                                    name="password"
-                                    autoComplete="new-password"
-                                />
-                            </div>
-                        </div>
+                name="password"
+                autoComplete="new-password"
+              />
+            </div>
 
-                        <div
-                            className={clsx(
-                                getClassName("kcFormGroupClass"),
-                                messagesPerField.printIfExists("password-confirm", getClassName("kcFormGroupErrorClass"))
-                            )}
-                        >
-                            <div className={getClassName("kcLabelWrapperClass")}>
-                                <label htmlFor="password-confirm" className={getClassName("kcLabelClass")}>
-                                    {msg("passwordConfirm")}
-                                </label>
-                            </div>
-                            <div className={getClassName("kcInputWrapperClass")}>
-                                <input type="password" id="password-confirm" className={getClassName("kcInputClass")} name="password-confirm" />
-                            </div>
-                        </div>
-                    </>
+            <div className="am-form-group">
+              <label htmlFor="password-confirm" className="am-label">
+                {msg("passwordConfirm")}
+              </label>
+              <input
+                type="password"
+                id="password-confirm"
+                className={clsx(
+                  "am-input",
+                  messagesPerField.printIfExists(
+                    "password-confirm",
+                    "am-input-error"
+                  )
                 )}
-                {recaptchaRequired && (
-                    <div className="form-group">
-                        <div className={getClassName("kcInputWrapperClass")}>
-                            <div className="g-recaptcha" data-size="compact" data-sitekey={recaptchaSiteKey}></div>
-                        </div>
-                    </div>
-                )}
-                <div className={getClassName("kcFormGroupClass")}>
-                    <div id="kc-form-options" className={getClassName("kcFormOptionsClass")}>
-                        <div className={getClassName("kcFormOptionsWrapperClass")}>
-                            <span>
-                                <a href={url.loginUrl}>{msg("backToLogin")}</a>
-                            </span>
-                        </div>
-                    </div>
+                name="password-confirm"
+              />
+            </div>
+          </>
+        )}
 
-                    <div id="kc-form-buttons" className={getClassName("kcFormButtonsClass")}>
-                        <input
-                            className={clsx(
-                                getClassName("kcButtonClass"),
-                                getClassName("kcButtonPrimaryClass"),
-                                getClassName("kcButtonBlockClass"),
-                                getClassName("kcButtonLargeClass")
-                            )}
-                            type="submit"
-                            value={msgStr("doRegister")}
-                        />
-                    </div>
-                </div>
-            </form>
-        </Template>
-    );
+        {/* Recaptcha */}
+        {recaptchaRequired && (
+          <div className="am-form-group">
+            <div
+              className="g-recaptcha"
+              data-size="compact"
+              data-sitekey={recaptchaSiteKey}
+            />
+          </div>
+        )}
+
+        {/* Submit */}
+        <div className="am-form-group" style={{ marginTop: "0.5rem" }}>
+          <input
+            className="am-btn-primary"
+            type="submit"
+            value={msgStr("doRegister")}
+          />
+        </div>
+
+        {/* Back to login */}
+        <div className="am-footer">
+          <span>
+            Already have an account?
+            <a href={url.loginUrl}>{msg("backToLogin")}</a>
+          </span>
+        </div>
+      </form>
+    </Template>
+  );
 }

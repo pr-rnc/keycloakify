@@ -1,8 +1,5 @@
-// Copy pasted from: https://github.com/InseeFrLab/keycloakify/blob/main/src/login/Template.tsx
-
 import { usePrepareTemplate } from "keycloakify/lib/usePrepareTemplate";
 import { type TemplateProps } from "keycloakify/login/TemplateProps";
-import { useGetClassName } from "keycloakify/login/lib/useGetClassName";
 import { clsx } from "keycloakify/tools/clsx";
 import { useState } from "react";
 import type { I18n } from "./i18n";
@@ -12,38 +9,28 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
   const {
     displayInfo = false,
     displayMessage = true,
-    displayRequiredFields = false,
-    displayWide = false,
+    displayRequiredFields: _displayRequiredFields = false,
     showAnotherWayIfPresent = true,
-    showUsernameNode = null,
     infoNode = null,
     kcContext,
     i18n,
-    doUseDefaultCss,
-    classes,
+    doUseDefaultCss: _doUseDefaultCss,
+    classes: _classes,
     children,
   } = props;
 
-  const { getClassName } = useGetClassName({ doUseDefaultCss, classes });
-
   const { msg } = i18n;
-
   const { auth, url, message, isAppInitiatedAction } = kcContext;
 
   const { isReady } = usePrepareTemplate({
-    doFetchDefaultThemeResources: doUseDefaultCss,
-    styles: [
-      `${url.resourcesCommonPath}/node_modules/patternfly/dist/css/patternfly.min.css`,
-      `${url.resourcesCommonPath}/node_modules/patternfly/dist/css/patternfly-additions.min.css`,
-      `${url.resourcesCommonPath}/lib/zocial/zocial.css`,
-      `${url.resourcesPath}/css/login.css`,
-    ],
-    htmlClassName: getClassName("kcHtmlClass"),
-    bodyClassName: getClassName("kcBodyClass"),
+    doFetchDefaultThemeResources: false,
+    styles: [],
+    htmlClassName: "am-root",
+    bodyClassName: undefined,
   });
 
   useState(() => {
-    document.title = i18n.msgStr("loginTitle", kcContext.realm.displayName);
+    document.title = `${i18n.msgStr("loginTitle", kcContext.realm.displayName)} | VYDON`;
   });
 
   if (!isReady) {
@@ -51,195 +38,104 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
   }
 
   return (
-    <div className={getClassName("kcLoginClass")}>
-      <div
-        className={clsx(
-          getClassName("kcFormCardClass"),
-          displayWide && getClassName("kcFormCardAccountClass")
-        )}
-      >
-        <header className={getClassName("kcFormHeaderClass")}>
-          {!(
-            auth !== undefined &&
-            auth.showUsername &&
-            !auth.showResetCredentials
-          ) ? (
-            displayRequiredFields ? (
-              <div className={getClassName("kcContentWrapperClass")}>
-                <div
-                  className={clsx(
-                    getClassName("kcLabelWrapperClass"),
-                    "subtitle"
-                  )}
-                >
-                  <span className="subtitle">
-                    <span className="required">*</span>
-                    {msg("requiredFields")}
-                  </span>
-                </div>
-                <div className="headerLogo">
-                  <span
-                    style={{
-                      fontSize: "1.75rem",
-                      fontWeight: 700,
-                      color: "hsl(210 40% 98%)",
-                      letterSpacing: "-0.02em",
-                    }}
-                  >
-                    anonymind
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="headerLogo">
-                <span
-                  style={{
-                    fontSize: "1.75rem",
-                    fontWeight: 700,
-                    color: "hsl(210 40% 98%)",
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  anonymind
-                </span>
-              </div>
-            )
-          ) : displayRequiredFields ? (
-            <div className={getClassName("kcContentWrapperClass")}>
-              <div
-                className={clsx(
-                  getClassName("kcLabelWrapperClass"),
-                  "subtitle"
-                )}
+    <div className="am-page">
+      <div className="am-card">
+        {/* Logo */}
+        <div className="am-logo">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 120 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient
+                id="logoGrad"
+                x1="0"
+                y1="0"
+                x2="120"
+                y2="120"
+                gradientUnits="userSpaceOnUse"
               >
-                <span className="subtitle">
-                  <span className="required">*</span> {msg("requiredFields")}
-                </span>
-              </div>
-              <div className="col-md-10">
-                {showUsernameNode}
-                <div className={getClassName("kcFormGroupClass")}>
-                  <div id="kc-username">
-                    <label id="kc-attempted-username">
-                      {auth?.attemptedUsername}
-                    </label>
-                    <a id="reset-login" href={url.loginRestartFlowUrl}>
-                      <div className="kc-login-tooltip">
-                        <i className={getClassName("kcResetFlowIcon")}></i>
-                        <span className="kc-tooltip-text">
-                          {msg("restartLoginTooltip")}
-                        </span>
-                      </div>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <>
-              {showUsernameNode}
-              <div className={getClassName("kcFormGroupClass")}>
-                <div id="kc-username">
-                  <label id="kc-attempted-username">
-                    {auth?.attemptedUsername}
-                  </label>
-                  <a id="reset-login" href={url.loginRestartFlowUrl}>
-                    <div className="kc-login-tooltip">
-                      <i className={getClassName("kcResetFlowIcon")}></i>
-                      <span className="kc-tooltip-text">
-                        {msg("restartLoginTooltip")}
-                      </span>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </>
-          )}
-        </header>
-        <div id="kc-content">
-          <div id="kc-content-wrapper" className="kcContentWrapper">
-            {/* App-initiated actions should not see warning messages about the need to complete the action during login. */}
-            {auth !== undefined &&
-              auth.showTryAnotherWayLink &&
-              showAnotherWayIfPresent && (
-                <form
-                  id="kc-select-try-another-way-form"
-                  action={url.loginAction}
-                  method="post"
-                  className={clsx(
-                    displayWide && getClassName("kcContentWrapperClass")
-                  )}
-                >
-                  <div
-                    className={clsx(
-                      displayWide && [
-                        getClassName("kcFormSocialAccountContentClass"),
-                        getClassName("kcFormSocialAccountClass"),
-                      ]
-                    )}
-                  >
-                    <div className={getClassName("kcFormGroupClass")}>
-                      <input type="hidden" name="tryAnotherWay" value="on" />
-                      <a
-                        href="#"
-                        id="try-another-way"
-                        onClick={() => {
-                          document.forms[
-                            "kc-select-try-another-way-form" as never
-                          ].submit();
-                          return false;
-                        }}
-                      >
-                        {msg("doTryAnotherWay")}
-                      </a>
-                    </div>
-                  </div>
-                </form>
-              )}
-            {displayMessage &&
-              message !== undefined &&
-              (message.type !== "warning" || !isAppInitiatedAction) && (
-                <div className={clsx("alert", `alert-${message.type}`)}>
-                  {message.type === "success" && (
-                    <span
-                      className={getClassName("kcFeedbackSuccessIcon")}
-                    ></span>
-                  )}
-                  {message.type === "warning" && (
-                    <span
-                      className={getClassName("kcFeedbackWarningIcon")}
-                    ></span>
-                  )}
-                  {message.type === "error" && (
-                    <span
-                      className={getClassName("kcFeedbackErrorIcon")}
-                    ></span>
-                  )}
-                  {message.type === "info" && (
-                    <span
-                      className={getClassName("kcFeedbackInfoIcon")}
-                    ></span>
-                  )}
-                  <span
-                    className="kc-feedback-text"
-                    dangerouslySetInnerHTML={{
-                      __html: message.summary,
-                    }}
-                  />
-                </div>
-              )}
-            {children}
-            {displayInfo && (
-              <div id="kc-info" className={getClassName("kcSignUpClass")}>
-                <div
-                  id="kc-info-wrapper"
-                  className={getClassName("kcInfoAreaWrapperClass")}
-                >
-                  {infoNode}
-                </div>
+                <stop offset="0%" stopColor="#7c3aed" />
+                <stop offset="50%" stopColor="#a855f7" />
+                <stop offset="100%" stopColor="#06b6d4" />
+              </linearGradient>
+            </defs>
+            <rect width="120" height="120" rx="28" fill="url(#logoGrad)" />
+            <circle cx="35" cy="35" r="6" fill="white" opacity="0.95" />
+            <circle cx="35" cy="60" r="6" fill="white" opacity="0.95" />
+            <circle cx="35" cy="85" r="6" fill="white" opacity="0.95" />
+            <circle cx="60" cy="42" r="6" fill="white" opacity="0.95" />
+            <circle cx="60" cy="72" r="6" fill="white" opacity="0.9" />
+            <line x1="41" y1="35" x2="54" y2="42" stroke="white" strokeWidth="2" opacity="0.6" />
+            <line x1="41" y1="60" x2="54" y2="42" stroke="white" strokeWidth="2" opacity="0.6" />
+            <line x1="41" y1="60" x2="54" y2="72" stroke="white" strokeWidth="2" opacity="0.6" />
+            <line x1="41" y1="85" x2="54" y2="72" stroke="white" strokeWidth="2" opacity="0.6" />
+            <line x1="66" y1="42" x2="78" y2="50" stroke="white" strokeWidth="2" opacity="0.4" />
+            <line x1="66" y1="72" x2="78" y2="65" stroke="white" strokeWidth="2" opacity="0.3" />
+            <circle cx="82" cy="50" r="5" fill="white" opacity="0.7" />
+            <circle cx="82" cy="65" r="5" fill="white" opacity="0.5" />
+            <circle cx="95" cy="38" r="3" fill="white" opacity="0.5" />
+            <circle cx="100" cy="52" r="2.5" fill="white" opacity="0.35" />
+            <circle cx="93" cy="60" r="2" fill="white" opacity="0.4" />
+            <circle cx="102" cy="70" r="2" fill="white" opacity="0.25" />
+            <circle cx="97" cy="45" r="1.5" fill="white" opacity="0.3" />
+            <circle cx="105" cy="58" r="1.5" fill="white" opacity="0.15" />
+            <circle cx="99" cy="78" r="1.5" fill="white" opacity="0.15" />
+          </svg>
+          <span className="am-wordmark">VYDON</span>
+        </div>
+
+        {/* Content */}
+        <div>
+          {/* Alerts */}
+          {displayMessage &&
+            message !== undefined &&
+            (message.type !== "warning" || !isAppInitiatedAction) && (
+              <div className={clsx("am-alert", `am-alert-${message.type}`)}>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: message.summary,
+                  }}
+                />
               </div>
             )}
-          </div>
+
+          {/* Page content */}
+          {children}
+
+          {/* Try another way */}
+          {auth !== undefined &&
+            auth.showTryAnotherWayLink &&
+            showAnotherWayIfPresent && (
+              <form
+                id="kc-select-try-another-way-form"
+                action={url.loginAction}
+                method="post"
+              >
+                <div className="am-try-another-way">
+                  <input type="hidden" name="tryAnotherWay" value="on" />
+                  <a
+                    href="#"
+                    onClick={() => {
+                      document.forms[
+                        "kc-select-try-another-way-form" as never
+                      ].submit();
+                      return false;
+                    }}
+                  >
+                    {msg("doTryAnotherWay")}
+                  </a>
+                </div>
+              </form>
+            )}
+
+          {/* Info / Registration link */}
+          {displayInfo && (
+            <div className="am-footer">{infoNode}</div>
+          )}
         </div>
       </div>
     </div>

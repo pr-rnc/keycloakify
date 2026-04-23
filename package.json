@@ -1,8 +1,8 @@
 {
-  "name": "@anonymind/keycloakify",
-  "homepage": "https://anonymind.io",
+  "name": "@vydon/keycloakify",
+  "homepage": "https://vydon.io",
   "version": "1.0.0",
-  "description": "Auth templates for AnonyMind",
+  "description": "Auth templates for Vydon",
   "repository": {
     "type": "git",
     "url": "git://github.com/pr-rnc/keycloakify.git"
